@@ -1,7 +1,6 @@
 name: flutter_version_manager
-description: "A new Flutter package project."
-version: 0.0.1
-homepage:
+description: "Flutter Version Manager"
+version: 0.1.0
 
 environment:
   sdk: ^3.5.3
@@ -10,13 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  version_repository_interface:
+    hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
+    version: ^0.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
-flutter:
-  
+  flutter_iconica_analysis:
+    hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub/
+    version: ^7.0.0
   
   
   

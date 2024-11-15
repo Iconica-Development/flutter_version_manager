@@ -1,5 +1,5 @@
-name: version_repository_interface
-description: "Version manager repository interface"
+name: firebase_version_repository
+description: "Firebase Version Repository"
 version: 0.1.0
 
 environment:
@@ -9,6 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cloud_firestore: any
+  version_repository_interface:
+    hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
+    version: ^0.1.0
 
 dev_dependencies:
   flutter_test:
@@ -16,30 +20,3 @@ dev_dependencies:
   flutter_iconica_analysis:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub/
     version: ^7.0.0
-flutter:
-  
-  
-  
-  
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
