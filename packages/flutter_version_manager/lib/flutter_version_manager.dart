@@ -1,7 +1,6 @@
-library flutter_version_manager;
+export "package:version_repository_interface/version_repository_interface.dart";
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export "src/check_updates.dart";
+export "src/config/translations.dart";
+export "src/config/version_manager_config.dart";
+export "src/flutter_version_manager.dart";
