@@ -1,0 +1,17 @@
+version: 2
+
+updates:
+  - package-ecosystem: "pub"
+    directory: "/packages/flutter_version_manager"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/version_repository_interface"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/firebase_version_repository"
+    schedule:
+      interval: "weekly"

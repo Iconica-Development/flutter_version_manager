@@ -1,0 +1,21 @@
+{
+  "name": "management_server_js",
+  "version": "1.0.0",
+  "main": "management_server/server.js",
+  "scripts": {
+    "start": "node management_server/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "child-process": "^1.0.2",
+    "express": "^4.21.1",
+    "express-fileupload": "^1.5.1",
+    "extract-zip": "^2.0.1",
+    "fs": "^0.0.1-security",
+    "fs-extra": "^11.2.0",
+    "node-fetch": "^2.6.7",
+    "path": "^0.12.7"
+  }
+}
