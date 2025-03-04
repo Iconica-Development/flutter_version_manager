@@ -3,7 +3,11 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
-import "package:flutter_version_manager/flutter_version_manager.dart";
+import "package:flutter_version_manager/src/check_updates.dart";
+import "package:flutter_version_manager/src/config/translations.dart";
+import "package:flutter_version_manager/src/config/version_manager_config.dart";
+import "package:flutter_version_manager/src/utils/scope.dart";
+import "package:version_repository_interface/version_repository_interface.dart";
 
 /// A widget that checks for updates.
 class FlutterVersionManager extends StatefulWidget {
@@ -87,7 +91,11 @@ class _FlutterVersionManagerState extends State<FlutterVersionManager> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) => VersionManagerScope(
+        config: widget.config ?? const VersionManagerConfig(),
+        service: widget.service ?? VersionRepositoryService(),
+        child: widget.child,
+      );
 
   Future<bool> _defaultMandatoryUpdate(
     VersionCompatibiliy compatibility,
