@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import "package:flutter/material.dart";
-import "package:flutter_version_manager/utils/get_version.dart";
+import "package:flutter_version_manager/src/utils/get_version.dart";
 import "package:version_repository_interface/version_repository_interface.dart";
 
 /// Check for updates, and update if necessary.
