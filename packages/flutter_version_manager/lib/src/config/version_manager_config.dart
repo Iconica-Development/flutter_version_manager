@@ -1,28 +1,31 @@
 import "package:flutter/material.dart";
 import "package:flutter_version_manager/src/config/translations.dart";
+import "package:flutter_version_manager/src/ui/widgets/mandatory_update_dialog.dart";
 
 /// A class that holds the translations for the version manager.
 /// And the custom builder widgets, for the dialogs and snackbars.
 class VersionManagerConfig {
   /// Creates a [VersionManagerConfig].
   const VersionManagerConfig({
-    this.translations,
-    this.mandatoryUpdateDialogBuilderBackendleading,
-    this.mandatoryUpdateDialogBuilderFrontendleading,
+    this.translations = const VersionManagerTranslations.empty(),
+    this.mandatoryUpdateDialogBuilderBackendleading =
+        DefaultMandatoryUpdateDialogBackendLeading.builder,
+    this.mandatoryUpdateDialogBuilderFrontendleading =
+        DefaultMandatoryUpdateDialogFrontendLeading.builder,
     this.optionalUpdateSnackBarBuilderBackendleading,
     this.optionalUpdateDialogBuilderFrontendleading,
     this.updateEndSnackbarBuilder,
   });
 
   /// The translations for the version manager.
-  final VersionManagerTranslations? translations;
+  final VersionManagerTranslations translations;
 
   /// The builder for the mandatory update dialog backend leading.
-  final Widget Function(BuildContext context)?
+  final Widget Function(BuildContext context)
       mandatoryUpdateDialogBuilderBackendleading;
 
   /// The builder for the mandatory update dialog frontend leading.
-  final Widget Function(BuildContext context)?
+  final Widget Function(BuildContext context)
       mandatoryUpdateDialogBuilderFrontendleading;
 
   /// The builder for the optional update snackbar backend leading.
