@@ -4,13 +4,14 @@ import "dart:async";
 
 import "package:flutter/material.dart";
 import "package:flutter_version_manager/src/check_updates.dart";
-import "package:flutter_version_manager/src/config/translations.dart";
 import "package:flutter_version_manager/src/config/version_manager_config.dart";
+import "package:flutter_version_manager/src/ui/widgets/mandatory_update_dialog.dart";
+import "package:flutter_version_manager/src/ui/widgets/optional_update_dialog.dart";
 import "package:flutter_version_manager/src/utils/scope.dart";
 import "package:version_repository_interface/version_repository_interface.dart";
 
 /// A widget that checks for updates.
-class FlutterVersionManager extends StatefulWidget {
+class FlutterVersionManager extends StatelessWidget {
   /// Creates a [FlutterVersionManager].
   const FlutterVersionManager({
     required this.child,
@@ -66,144 +67,91 @@ class FlutterVersionManager extends StatefulWidget {
 
   /// The configuration for the version manager.
   final VersionManagerConfig? config;
-
   @override
-  State<FlutterVersionManager> createState() => _FlutterVersionManagerState();
+  Widget build(BuildContext context) => VersionManagerScope(
+        config: config ?? const VersionManagerConfig(),
+        service: service ?? VersionRepositoryService(),
+        child: _VersionManagerInitializer(
+          backendLeading: backendLeading,
+          onMandatoryUpdate: onMandatoryUpdate,
+          onOptionalUpdate: onOptionalUpdate,
+          onUpdateEnd: onUpdateEnd,
+          child: child,
+        ),
+      );
 }
 
-class _FlutterVersionManagerState extends State<FlutterVersionManager> {
-  late VersionManagerTranslations translations;
+class _VersionManagerInitializer extends StatefulWidget {
+  const _VersionManagerInitializer({
+    required this.child,
+    required this.backendLeading,
+    required this.onMandatoryUpdate,
+    required this.onOptionalUpdate,
+    required this.onUpdateEnd,
+  });
 
+  final Widget child;
+  final bool backendLeading;
+  final Future<bool> Function(VersionCompatibiliy, bool)? onMandatoryUpdate;
+  final Future<bool> Function(VersionCompatibiliy, bool)? onOptionalUpdate;
+  final VoidCallback? onUpdateEnd;
+
+  @override
+  State<_VersionManagerInitializer> createState() =>
+      _VersionManagerInitializerState();
+}
+
+class _VersionManagerInitializerState
+    extends State<_VersionManagerInitializer> {
   @override
   void initState() {
     super.initState();
-    translations =
-        widget.config?.translations ?? const VersionManagerTranslations.empty();
+    unawaited(_checkForUpdates());
+  }
+
+  Future<void> _checkForUpdates() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      var scope = VersionManagerScope.of(context);
+      var service = scope.service;
+
       await checkForUpdates(
-        service: widget.service ?? VersionRepositoryService(),
+        service: service,
         backendLeading: widget.backendLeading,
-        onMandatoryUpdate: widget.onMandatoryUpdate ?? _defaultMandatoryUpdate,
-        onOptionalUpdate: widget.onOptionalUpdate ?? _defaultOptionalUpdate,
+        onMandatoryUpdate: (compatibility, backendLeading) =>
+            widget.onMandatoryUpdate?.call(compatibility, backendLeading) ??
+            _defaultMandatoryUpdate(
+              context,
+              compatibility,
+              backendLeading,
+            ),
+        onOptionalUpdate: (compatibility, backendLeading) =>
+            widget.onOptionalUpdate?.call(compatibility, backendLeading) ??
+            defaultOptionalUpdate(
+              context,
+              compatibility: compatibility,
+              backendLeading: backendLeading,
+            ),
         onUpdateEnd: widget.onUpdateEnd ?? _defaultOnUpdateEnd,
       );
     });
   }
 
-  @override
-  Widget build(BuildContext context) => VersionManagerScope(
-        config: widget.config ?? const VersionManagerConfig(),
-        service: widget.service ?? VersionRepositoryService(),
-        child: widget.child,
-      );
-
   Future<bool> _defaultMandatoryUpdate(
+    BuildContext context,
     VersionCompatibiliy compatibility,
     bool backendLeading,
   ) async {
     if (backendLeading) {
-      unawaited(
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) =>
-              widget.config?.mandatoryUpdateDialogBuilderBackendleading
-                  ?.call(context) ??
-              AlertDialog(
-                title: Text(
-                  translations.mandatoryUpdateTitle,
-                ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      translations.mandatoryUpdateBody,
-                    ),
-                  ],
-                ),
-              ),
-        ),
+      return DefaultMandatoryUpdateDialogBackendLeading
+          .showMandatoryUpdateDialog(
+        context,
       );
-      return false;
     } else {
-      unawaited(
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) =>
-              widget.config?.mandatoryUpdateDialogBuilderFrontendleading
-                  ?.call(context) ??
-              AlertDialog(
-                title: Text(
-                  translations.mandatoryUpdateProgressTitle,
-                ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      translations.mandatoryUpdateProgressBody,
-                    ),
-                    const SizedBox(height: 16),
-                    const LinearProgressIndicator(),
-                  ],
-                ),
-              ),
-        ),
+      return DefaultMandatoryUpdateDialogFrontendLeading
+          .showMandatoryUpdateDialog(
+        context,
       );
-      return true;
-    }
-  }
-
-  Future<bool> _defaultOptionalUpdate(
-    VersionCompatibiliy compatibility,
-    bool backendLeading,
-  ) async {
-    if (backendLeading) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        widget.config?.optionalUpdateSnackBarBuilderBackendleading
-                ?.call(context) ??
-            SnackBar(
-              content: Text(
-                translations.optionalUpdateBackendLeadingTitle,
-              ),
-            ),
-      );
-
-      return false;
-    } else {
-      return await showDialog<bool>(
-            context: context,
-            builder: (context) =>
-                widget.config?.optionalUpdateDialogBuilderFrontendleading
-                    ?.call(context) ??
-                AlertDialog(
-                  title: Text(
-                    translations.optionalUpdateFrontendLeadingTitle,
-                  ),
-                  content: Text(
-                    translations.optionalUpdateFrontendLeadingBody,
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                      child: Text(
-                        translations.optionalUpdateBackendLeadingYes,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      child: Text(
-                        translations.optionalUpdateBackendLeadingNo,
-                      ),
-                    ),
-                  ],
-                ),
-          ) ??
-          false;
     }
   }
 
@@ -212,8 +160,11 @@ class _FlutterVersionManagerState extends State<FlutterVersionManager> {
       Navigator.of(context).pop();
     }
 
+    var config = VersionManagerScope.of(context).config;
+    var translations = config.translations;
+
     ScaffoldMessenger.of(context).showSnackBar(
-      widget.config?.updateEndSnackbarBuilder?.call(context) ??
+      config.updateEndSnackbarBuilder?.call(context) ??
           SnackBar(
             content: Text(
               translations.updateCompleteTitle,
@@ -221,4 +172,7 @@ class _FlutterVersionManagerState extends State<FlutterVersionManager> {
           ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
