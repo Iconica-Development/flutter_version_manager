@@ -75,16 +75,15 @@ class _FlutterVersionManagerState extends State<FlutterVersionManager> {
     super.initState();
     translations =
         widget.config?.translations ?? const VersionManagerTranslations.empty();
-    Future.delayed(
-      Duration.zero,
-      () async => checkForUpdates(
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await checkForUpdates(
         service: widget.service ?? VersionRepositoryService(),
         backendLeading: widget.backendLeading,
         onMandatoryUpdate: widget.onMandatoryUpdate ?? _defaultMandatoryUpdate,
         onOptionalUpdate: widget.onOptionalUpdate ?? _defaultOptionalUpdate,
         onUpdateEnd: widget.onUpdateEnd ?? _defaultOnUpdateEnd,
-      ),
-    );
+      );
+    });
   }
 
   @override
