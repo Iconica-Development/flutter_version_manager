@@ -1,14 +1,7 @@
-// import "package:example/firebase_options.dart";
-// import "package:firebase_core/firebase_core.dart";
-import "package:firebase_version_repository/firebase_version_repository.dart";
 import "package:flutter/material.dart";
 import "package:flutter_version_manager/flutter_version_manager.dart";
 
 void main() async {
-  // await Firebase.initializeApp(
-  // options: DefaultFirebaseOptions.currentPlatform,
-  // );
-
   runApp(const MyApp());
 }
 
@@ -40,8 +33,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // VersionRepositoryInterface versionRepositoryInterface =
-  //     FirebaseVersionRepository();
   VersionRepositoryInterface versionRepositoryInterface =
       LocalVersionRepository();
   late VersionRepositoryService service;
