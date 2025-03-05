@@ -19,7 +19,7 @@ class DefaultMandatoryUpdateDialogBackendLeading {
       barrierDismissible: false,
       context: context,
       builder: (ctx) =>
-          config.mandatoryUpdateDialogBuilderBackendleading(context),
+          config.builders.mandatoryUpdateDialogBuilderBackendleading(context),
     );
   }
 
@@ -81,8 +81,9 @@ class DefaultMandatoryUpdateDialogFrontendLeading {
     return await showDialog(
           barrierDismissible: false,
           context: context,
-          builder: (ctx) =>
-              config.mandatoryUpdateDialogBuilderFrontendleading.call(context),
+          builder: (ctx) => config
+              .builders.mandatoryUpdateDialogBuilderFrontendleading
+              .call(context),
         ) ??
         false;
   }
