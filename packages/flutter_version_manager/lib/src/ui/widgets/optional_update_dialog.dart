@@ -1,10 +1,136 @@
+import "dart:io";
+
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+import "package:flutter_version_manager/src/config/version_manager_config.dart";
 import "package:flutter_version_manager/src/utils/scope.dart";
 
-/// Backend Leading Optional Update Dialog
+/// Default optional update dialog for when the backend is leading and the
+/// frontend could be updated but it is not required for the app to work.
 class DefaultOptionalUpdateDialogBackendLeading {
   ///
   const DefaultOptionalUpdateDialogBackendLeading._();
+
+  /// Pushes the optional update dialog to the screen and it can be dismissed
+  static Future<bool> showOptionalUpdateDialog(BuildContext context) async {
+    var scope = VersionManagerScope.of(context);
+    var config = scope.config;
+
+    return await showDialog(
+          context: context,
+          builder: (ctx) =>
+              config.optionalUpdateDialogBuilderFrontendleading.call(context),
+        ) ??
+        false;
+  }
+
+  /// Builder for the optional update dialog frontend leading
+  /// This dialog will show an option to update the app and it can be dismissed.
+  static Widget builder(BuildContext context) {
+    var scope = VersionManagerScope.of(context);
+
+    return _OptionalUpdateDialog(
+      config: scope.config,
+    );
+  }
+}
+
+/// The optional update dialog that updates state when clicking "Yes"
+class _OptionalUpdateDialog extends StatefulWidget {
+  const _OptionalUpdateDialog({required this.config});
+  final VersionManagerConfig config;
+  @override
+  State<_OptionalUpdateDialog> createState() => _OptionalUpdateDialogState();
+}
+
+class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
+  bool _showAppStoreButton = false;
+
+  @override
+  Widget build(BuildContext context) {
+    var translations = widget.config.translations;
+    var theme = Theme.of(context);
+    var textTheme = theme.textTheme;
+
+    void onClickYes() {
+      setState(() {
+        _showAppStoreButton = true;
+      });
+    }
+
+    void onClickNo() {
+      Navigator.of(context).pop(false);
+    }
+
+    var buttonAction = widget.config.onMandatoryUpdateClickAndroid;
+    var buttonText = translations.mandatoryUpdateButtonAndroid;
+    var updateInfoText = _showAppStoreButton
+        ? translations.mandatoryUpdateBodyAndroid
+        : translations.optionalUpdateQuestionAndroid;
+    if (kIsWeb) {
+      buttonAction = widget.config.onMandatoryUpdateClickWeb;
+      buttonText = translations.mandatoryUpdateButtonWeb;
+      updateInfoText = _showAppStoreButton
+          ? translations.mandatoryUpdateBodyWeb
+          : translations.optionalUpdateQuestionWeb;
+    } else if (Platform.isIOS || Platform.isMacOS) {
+      buttonAction = widget.config.onMandatoryUpdateClickIos;
+      buttonText = translations.mandatoryUpdateButtonIos;
+      updateInfoText = _showAppStoreButton
+          ? translations.mandatoryUpdateBodyIos
+          : translations.optionalUpdateQuestionIos;
+    }
+
+    return AlertDialog(
+      title: Text(
+        translations.optionalUpdateFrontendLeadingTitle,
+        style: textTheme.titleMedium,
+        textAlign: TextAlign.center,
+      ),
+      content: Text(
+        updateInfoText,
+        style: textTheme.bodyMedium,
+        textAlign: TextAlign.center,
+      ),
+      actionsAlignment: MainAxisAlignment.center,
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: _showAppStoreButton
+              ? [
+                  FilledButton(
+                    onPressed: buttonAction,
+                    child: Text(
+                      buttonText,
+                    ),
+                  ),
+                ]
+              : [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onClickNo,
+                      child: Text(translations.optionalUpdateBackendLeadingNo),
+                    ),
+                  ),
+                  const SizedBox(width: 22),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: onClickYes,
+                      child: Text(translations.optionalUpdateBackendLeadingYes),
+                    ),
+                  ),
+                ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Default optional update dialog for when the frontend is leading and the
+/// backend could be updated but it is not required for the app to work.
+class DefaultOptionalUpdateDialogFrontendLeading {
+  ///
+  const DefaultOptionalUpdateDialogFrontendLeading._();
 
   ///
   static Future<bool> showOptionalUpdateDialog(BuildContext context) async {
@@ -30,57 +156,6 @@ class DefaultOptionalUpdateDialogBackendLeading {
       content: Text(
         translations.optionalUpdateBackendLeadingTitle,
       ),
-    );
-  }
-}
-
-/// Frontend Leading Optional Update Dialog
-class DefaultOptionalUpdateDialogFrontendLeading {
-  ///
-  const DefaultOptionalUpdateDialogFrontendLeading._();
-
-  ///
-  static Future<bool> showOptionalUpdateDialog(BuildContext context) async {
-    var scope = VersionManagerScope.of(context);
-    var config = scope.config;
-
-    return await showDialog(
-      context: context,
-      builder: (ctx) =>
-          config.optionalUpdateDialogBuilderFrontendleading.call(context),
-    );
-  }
-
-  ///
-  static Widget builder(BuildContext context) {
-    var scope = VersionManagerScope.of(context);
-    var translations = scope.config.translations;
-
-    return AlertDialog(
-      title: Text(
-        translations.optionalUpdateFrontendLeadingTitle,
-      ),
-      content: Text(
-        translations.optionalUpdateFrontendLeadingBody,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(true);
-          },
-          child: Text(
-            translations.optionalUpdateBackendLeadingYes,
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(false);
-          },
-          child: Text(
-            translations.optionalUpdateBackendLeadingNo,
-          ),
-        ),
-      ],
     );
   }
 }

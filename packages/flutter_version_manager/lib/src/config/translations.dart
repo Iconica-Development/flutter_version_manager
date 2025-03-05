@@ -11,6 +11,9 @@ class VersionManagerTranslations {
     required this.mandatoryUpdateButtonWeb,
     required this.mandatoryUpdateProgressTitle,
     required this.mandatoryUpdateProgressBody,
+    required this.optionalUpdateQuestionAndroid,
+    required this.optionalUpdateQuestionIos,
+    required this.optionalUpdateQuestionWeb,
     required this.optionalUpdateBackendLeadingTitle,
     required this.optionalUpdateFrontendLeadingTitle,
     required this.optionalUpdateFrontendLeadingBody,
@@ -35,6 +38,12 @@ class VersionManagerTranslations {
     this.mandatoryUpdateButtonWeb = "Reload this page",
     this.mandatoryUpdateProgressTitle = "Update in progress",
     this.mandatoryUpdateProgressBody = "Please wait while the app updates",
+    this.optionalUpdateQuestionAndroid =
+        "Would you like to update your app to the newest version?",
+    this.optionalUpdateQuestionIos =
+        "Would you like to update your app to the newest version?",
+    this.optionalUpdateQuestionWeb =
+        "Would you like to update to the latest version of the website?",
     this.optionalUpdateBackendLeadingTitle =
         "Update available, please update from the store",
     this.optionalUpdateFrontendLeadingTitle = "Update available",
@@ -71,6 +80,18 @@ class VersionManagerTranslations {
   /// The body for the mandatory update progress dialog
   final String mandatoryUpdateProgressBody;
 
+  /// The body for the optional update dialog asking the user to update
+  /// for android
+  final String optionalUpdateQuestionAndroid;
+
+  /// The body for the optional update dialog asking the user to update
+  /// for ios
+  final String optionalUpdateQuestionIos;
+
+  /// The body for the optional update dialog asking the user to update
+  /// for web
+  final String optionalUpdateQuestionWeb;
+
   /// The title for the optional update dialog
   final String optionalUpdateBackendLeadingTitle;
 
@@ -101,6 +122,9 @@ class VersionManagerTranslations {
     String? mandatoryUpdateButtonWeb,
     String? mandatoryUpdateProgressTitle,
     String? mandatoryUpdateProgressBody,
+    String? optionalUpdateQuestionAndroid,
+    String? optionalUpdateQuestionIos,
+    String? optionalUpdateQuestionWeb,
     String? optionalUpdateBackendLeadingTitle,
     String? optionalUpdateFrontendLeadingTitle,
     String? optionalUpdateFrontendLeadingBody,
@@ -126,6 +150,12 @@ class VersionManagerTranslations {
             mandatoryUpdateProgressTitle ?? this.mandatoryUpdateProgressTitle,
         mandatoryUpdateProgressBody:
             mandatoryUpdateProgressBody ?? this.mandatoryUpdateProgressBody,
+        optionalUpdateQuestionAndroid:
+            optionalUpdateQuestionAndroid ?? this.optionalUpdateQuestionAndroid,
+        optionalUpdateQuestionIos:
+            optionalUpdateQuestionIos ?? this.optionalUpdateQuestionIos,
+        optionalUpdateQuestionWeb:
+            optionalUpdateQuestionWeb ?? this.optionalUpdateQuestionWeb,
         optionalUpdateBackendLeadingTitle: optionalUpdateBackendLeadingTitle ??
             this.optionalUpdateBackendLeadingTitle,
         optionalUpdateFrontendLeadingTitle:

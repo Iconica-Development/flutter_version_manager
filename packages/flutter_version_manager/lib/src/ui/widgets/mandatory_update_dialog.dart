@@ -79,11 +79,12 @@ class DefaultMandatoryUpdateDialogFrontendLeading {
     var scope = VersionManagerScope.of(context);
     var config = scope.config;
     return await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (ctx) =>
-          config.mandatoryUpdateDialogBuilderFrontendleading.call(context),
-    );
+          barrierDismissible: false,
+          context: context,
+          builder: (ctx) =>
+              config.mandatoryUpdateDialogBuilderFrontendleading.call(context),
+        ) ??
+        false;
   }
 
   ///
