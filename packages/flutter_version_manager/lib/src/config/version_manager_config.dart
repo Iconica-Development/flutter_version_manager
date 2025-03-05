@@ -14,13 +14,16 @@ class VersionManagerConfig {
     this.mandatoryUpdateDialogBuilderFrontendleading =
         DefaultMandatoryUpdateDialogFrontendLeading.builder,
     this.optionalUpdateSnackBarBuilderBackendleading =
-        DefaultOptionalUpdateDialogBackendLeading.builder,
-    this.optionalUpdateDialogBuilderFrontendleading =
         DefaultOptionalUpdateDialogFrontendLeading.builder,
+    this.optionalUpdateDialogBuilderFrontendleading =
+        DefaultOptionalUpdateDialogBackendLeading.builder,
     this.updateEndSnackbarBuilder,
     this.onMandatoryUpdateClickAndroid,
     this.onMandatoryUpdateClickIos,
     this.onMandatoryUpdateClickWeb,
+    this.onOptionalUpdateClickAndroid,
+    this.onOptionalUpdateClickIos,
+    this.onOptionalUpdateClickWeb,
   });
 
   /// The translations for the version manager.
@@ -45,6 +48,18 @@ class VersionManagerConfig {
   /// The function to call when the user clicks the mandatory update for web
   /// This function should reload the page.
   final VoidCallback? onMandatoryUpdateClickWeb;
+
+  /// The function to call when the user clicks the optional update for android
+  /// This function should open the play store page for the app.
+  final VoidCallback? onOptionalUpdateClickAndroid;
+
+  /// The function to call when the user clicks the optional update for ios
+  /// This function should open the app store page for the app.
+  final VoidCallback? onOptionalUpdateClickIos;
+
+  /// The function to call when the user clicks the optional update for web
+  /// This function should reload the page.
+  final VoidCallback? onOptionalUpdateClickWeb;
 
   /// The builder for the optional update snackbar backend leading.
   final SnackBar Function(BuildContext context)
