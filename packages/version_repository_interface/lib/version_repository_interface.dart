@@ -7,4 +7,5 @@ export "src/models/compatibiliy.dart";
 export "src/models/update_check_result.dart";
 export "src/models/version.dart";
 export "src/services/version_repository_service.dart";
+export "src/utils/get_version.dart";
 export "src/utils/version_string.dart";
