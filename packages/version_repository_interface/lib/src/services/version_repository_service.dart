@@ -21,6 +21,16 @@ class VersionRepositoryService {
         version: await versionRepositoryInterface.getCurrentBackendVersion(),
       );
 
+  /// Get the expected backend version.
+  /// Returns the expected backend version.
+  Future<Version?> getExpectedBackendVersion() async {
+    var expected = await versionRepositoryInterface.getExpectedBackendVersion();
+    if (expected == null) {
+      return null;
+    }
+    return Version.parse(version: expected);
+  }
+
   /// Update the backend version.
   /// [compatibility] The compatibility of the new version.
   /// [version] The new version.
@@ -39,20 +49,29 @@ class VersionRepositoryService {
         version: await versionRepositoryInterface.getRequiredAppVersion(),
       );
 
+  /// Get the current app version.
+  /// Returns the current app version.
+  Future<Version?> getCurrentAppVersion() async {
+    var current = await versionRepositoryInterface.getCurrentAppVersion();
+    if (current == null) {
+      return null;
+    }
+    return Version.parse(
+      version: current.split("+").first,
+    );
+  }
+
   /// Check for updates.
   /// [expected] The expected version.
   /// [current] The current version.
   /// [backendLeading] If the backend is leading. Defaults to `true`.
   /// Returns the result of the update check.
   Future<UpdateCheckResult> checkForUpdates({
-    required String expected,
-    required String current,
+    required Version expected,
+    required Version current,
     bool backendLeading = true,
   }) async {
-    var expectedVersion = Version.parse(version: expected);
-    var currentVersion = Version.parse(version: current);
-
-    var compatibiliy = expectedVersion.compare(currentVersion);
+    var compatibiliy = expected.compare(current);
 
     if (compatibiliy == VersionCompatibiliy.majorUpgrade ||
         compatibiliy == VersionCompatibiliy.majorDowngrade) {

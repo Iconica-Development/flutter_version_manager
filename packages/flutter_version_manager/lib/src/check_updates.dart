@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import "package:flutter/material.dart";
-import "package:flutter_version_manager/src/utils/get_version.dart";
 import "package:version_repository_interface/version_repository_interface.dart";
 
 /// Check for updates, and update if necessary.
@@ -24,9 +23,8 @@ Future<void> checkForUpdates({
   VoidCallback? onUpdateEnd,
   bool backendLeading = true,
 }) async {
-  var expectedBackendVersion = await getKeyFromPubspecOrNull("backend-version");
-  var currentBackendVersion =
-      (await service.getCurrentBackendVersion()).toString();
+  var expectedBackendVersion = await service.getExpectedBackendVersion();
+  var currentBackendVersion = await service.getCurrentBackendVersion();
 
   if (expectedBackendVersion == null) {
     debugPrint(
@@ -57,16 +55,13 @@ Future<void> checkForUpdates({
     debugPrint("CHECKING APP AVAILABILITY");
 
     var requiredAppVersion = await service.getRequiredAppVersion();
-    var currentAppVersion = await getKeyFromPubspecOrNull("version");
+    var currentAppVersion = await service.getCurrentAppVersion();
 
     if (currentAppVersion != null) {
-      currentAppVersion = currentAppVersion.split("+").first;
-
       debugPrint(
         "REQUIRED APP: $requiredAppVersion\nCURRENT APP: $currentAppVersion",
       );
-      var result =
-          requiredAppVersion.compare(Version.parse(version: currentAppVersion));
+      var result = requiredAppVersion.compare(currentAppVersion);
 
       if (!result.isUpgrade) {
         return;
@@ -85,10 +80,7 @@ Future<void> checkForUpdates({
       return;
     }
 
-    await updateMethod?.call(
-      updateType,
-      Version.parse(version: expectedBackendVersion),
-    );
+    await updateMethod?.call(updateType, expectedBackendVersion);
   } else {
     var shouldUpdate = await onOptionalUpdate?.call(
           updateType,
@@ -100,10 +92,7 @@ Future<void> checkForUpdates({
       return;
     }
 
-    await updateMethod?.call(
-      updateType,
-      Version.parse(version: expectedBackendVersion),
-    );
+    await updateMethod?.call(updateType, expectedBackendVersion);
   }
 
   onUpdateEnd?.call();

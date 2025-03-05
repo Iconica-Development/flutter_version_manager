@@ -39,12 +39,19 @@ class FirebaseVersionRepository implements VersionRepositoryInterface {
   }
 
   @override
+  Future<String?> getExpectedBackendVersion() async =>
+      getKeyFromPubspecOrNull("backend-version");
+
+  @override
   Future<String> getRequiredAppVersion() async {
     var data = await versionDocment.get();
     var map = data.data() as Map<String, dynamic>?;
 
     return map?[minimumAppVersionKey] as String;
   }
+
+  @override
+  Future<String?> getCurrentAppVersion() => getKeyFromPubspecOrNull("version");
 
   @override
   Future<void> updateBackendVersion(
