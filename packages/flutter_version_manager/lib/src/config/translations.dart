@@ -3,7 +3,12 @@ class VersionManagerTranslations {
   /// Creates a [VersionManagerTranslations].
   const VersionManagerTranslations({
     required this.mandatoryUpdateTitle,
-    required this.mandatoryUpdateBody,
+    required this.mandatoryUpdateBodyAndroid,
+    required this.mandatoryUpdateBodyIos,
+    required this.mandatoryUpdateBodyWeb,
+    required this.mandatoryUpdateButtonAndroid,
+    required this.mandatoryUpdateButtonIos,
+    required this.mandatoryUpdateButtonWeb,
     required this.mandatoryUpdateProgressTitle,
     required this.mandatoryUpdateProgressBody,
     required this.optionalUpdateBackendLeadingTitle,
@@ -17,8 +22,17 @@ class VersionManagerTranslations {
   /// Creates a [VersionManagerTranslations] with default values.
   const VersionManagerTranslations.empty({
     this.mandatoryUpdateTitle = "Update required",
-    this.mandatoryUpdateBody =
-        "Please update the app from the store and restart",
+    this.mandatoryUpdateBodyAndroid =
+        "Please update the app in the Play Store and restart "
+            "the app to get the newest version.",
+    this.mandatoryUpdateBodyIos =
+        "Please update the app in the App Store and restart "
+            "the app to get the newest version.",
+    this.mandatoryUpdateBodyWeb =
+        "Please reload the page to get the newest version.",
+    this.mandatoryUpdateButtonAndroid = "Go to the Play Store",
+    this.mandatoryUpdateButtonIos = "Go to the App Store",
+    this.mandatoryUpdateButtonWeb = "Reload this page",
     this.mandatoryUpdateProgressTitle = "Update in progress",
     this.mandatoryUpdateProgressBody = "Please wait while the app updates",
     this.optionalUpdateBackendLeadingTitle =
@@ -33,8 +47,23 @@ class VersionManagerTranslations {
   /// The title for the mandatory update dialog
   final String mandatoryUpdateTitle;
 
-  /// The body for the mandatory update dialog
-  final String mandatoryUpdateBody;
+  /// The body for the mandatory update dialog on Android
+  final String mandatoryUpdateBodyAndroid;
+
+  /// The body for the mandatory update dialog on iOS
+  final String mandatoryUpdateBodyIos;
+
+  /// The body for the mandatory update dialog on Web
+  final String mandatoryUpdateBodyWeb;
+
+  /// The text for the update button in the mandatory update dialog on Android
+  final String mandatoryUpdateButtonAndroid;
+
+  /// The text for the update button in the mandatory update dialog on iOS
+  final String mandatoryUpdateButtonIos;
+
+  /// The text for the update button in the mandatory update dialog on Web
+  final String mandatoryUpdateButtonWeb;
 
   /// The title for the mandatory update progress dialog
   final String mandatoryUpdateProgressTitle;
@@ -64,7 +93,12 @@ class VersionManagerTranslations {
   /// but with the given fields
   VersionManagerTranslations copyWith({
     String? mandatoryUpdateTitle,
-    String? mandatoryUpdateBody,
+    String? mandatoryUpdateBodyAndroid,
+    String? mandatoryUpdateBodyIos,
+    String? mandatoryUpdateBodyWeb,
+    String? mandatoryUpdateButtonAndroid,
+    String? mandatoryUpdateButtonIos,
+    String? mandatoryUpdateButtonWeb,
     String? mandatoryUpdateProgressTitle,
     String? mandatoryUpdateProgressBody,
     String? optionalUpdateBackendLeadingTitle,
@@ -76,7 +110,18 @@ class VersionManagerTranslations {
   }) =>
       VersionManagerTranslations(
         mandatoryUpdateTitle: mandatoryUpdateTitle ?? this.mandatoryUpdateTitle,
-        mandatoryUpdateBody: mandatoryUpdateBody ?? this.mandatoryUpdateBody,
+        mandatoryUpdateBodyAndroid:
+            mandatoryUpdateBodyAndroid ?? this.mandatoryUpdateBodyAndroid,
+        mandatoryUpdateBodyIos:
+            mandatoryUpdateBodyIos ?? this.mandatoryUpdateBodyIos,
+        mandatoryUpdateBodyWeb:
+            mandatoryUpdateBodyWeb ?? this.mandatoryUpdateBodyWeb,
+        mandatoryUpdateButtonAndroid:
+            mandatoryUpdateButtonAndroid ?? this.mandatoryUpdateButtonAndroid,
+        mandatoryUpdateButtonIos:
+            mandatoryUpdateButtonIos ?? this.mandatoryUpdateButtonIos,
+        mandatoryUpdateButtonWeb:
+            mandatoryUpdateButtonWeb ?? this.mandatoryUpdateButtonWeb,
         mandatoryUpdateProgressTitle:
             mandatoryUpdateProgressTitle ?? this.mandatoryUpdateProgressTitle,
         mandatoryUpdateProgressBody:
