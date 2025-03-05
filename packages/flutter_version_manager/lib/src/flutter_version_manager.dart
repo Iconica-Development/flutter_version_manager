@@ -127,7 +127,7 @@ class _VersionManagerInitializerState
             ),
         onOptionalUpdate: (compatibility, backendLeading) =>
             widget.onOptionalUpdate?.call(compatibility, backendLeading) ??
-            defaultOptionalUpdate(
+            _defaultOptionalUpdate(
               context,
               compatibility: compatibility,
               backendLeading: backendLeading,
@@ -150,6 +150,23 @@ class _VersionManagerInitializerState
     } else {
       return DefaultMandatoryUpdateDialogFrontendLeading
           .showMandatoryUpdateDialog(
+        context,
+      );
+    }
+  }
+
+  Future<bool> _defaultOptionalUpdate(
+    BuildContext context, {
+    required VersionCompatibiliy compatibility,
+    required bool backendLeading,
+  }) async {
+    if (backendLeading) {
+      return DefaultOptionalUpdateDialogBackendLeading.showOptionalUpdateDialog(
+        context,
+      );
+    } else {
+      return DefaultOptionalUpdateDialogFrontendLeading
+          .showOptionalUpdateDialog(
         context,
       );
     }
