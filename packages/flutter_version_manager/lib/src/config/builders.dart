@@ -1,4 +1,7 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
+import "package:flutter_version_manager/src/ui/widgets/buttons.dart";
 import "package:flutter_version_manager/src/ui/widgets/mandatory_update_dialog.dart";
 import "package:flutter_version_manager/src/ui/widgets/optional_update_dialog.dart";
 
@@ -6,6 +9,9 @@ import "package:flutter_version_manager/src/ui/widgets/optional_update_dialog.da
 class VersionManagerBuilders {
   /// Creates a new instance of [VersionManagerBuilders].
   const VersionManagerBuilders({
+    this.acceptButtonBuilder = DefaultAcceptButton.builder,
+    this.declineButtonBuilder = DefaultDeclineButton.builder,
+    this.updateButtonBuilder = DefaultUpdateButton.builder,
     this.mandatoryUpdateDialogBuilderBackendleading =
         DefaultMandatoryUpdateDialogBackendLeading.builder,
     this.mandatoryUpdateDialogBuilderFrontendleading =
@@ -37,4 +43,20 @@ class VersionManagerBuilders {
 
   /// The builder for the update end snackbar.
   final SnackBar Function(BuildContext context)? updateEndSnackbarBuilder;
+
+  /// The builder for the button to accept the update.
+  final ButtonBuilder declineButtonBuilder;
+
+  /// The builder for the button to decline the update.
+  final ButtonBuilder acceptButtonBuilder;
+
+  /// The builder for the button to trigger the update.
+  final ButtonBuilder updateButtonBuilder;
 }
+
+/// Builder definition for providing a button implementation
+typedef ButtonBuilder = Widget Function(
+  BuildContext context,
+  FutureOr<void>? Function()? onPressed,
+  Widget child,
+);
