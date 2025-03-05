@@ -18,8 +18,9 @@ class DefaultOptionalUpdateDialogBackendLeading {
 
     return await showDialog(
           context: context,
-          builder: (ctx) =>
-              config.optionalUpdateDialogBuilderFrontendleading.call(context),
+          builder: (ctx) => config
+              .builders.optionalUpdateDialogBuilderFrontendleading
+              .call(context),
         ) ??
         false;
   }
@@ -140,7 +141,8 @@ class DefaultOptionalUpdateDialogFrontendLeading {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        config.optionalUpdateSnackBarBuilderBackendleading.call(context),
+        config.builders.optionalUpdateSnackBarBuilderBackendleading
+            .call(context),
       );
     });
 
