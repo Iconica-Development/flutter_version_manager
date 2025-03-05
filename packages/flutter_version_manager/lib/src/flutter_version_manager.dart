@@ -181,7 +181,7 @@ class _VersionManagerInitializerState
     var translations = config.translations;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      config.updateEndSnackbarBuilder?.call(context) ??
+      config.builders.updateEndSnackbarBuilder?.call(context) ??
           SnackBar(
             content: Text(
               translations.updateCompleteTitle,
