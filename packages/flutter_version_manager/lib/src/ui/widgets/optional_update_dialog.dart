@@ -49,7 +49,8 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var translations = widget.config.translations;
+    var config = widget.config;
+    var translations = config.translations;
     var theme = Theme.of(context);
     var textTheme = theme.textTheme;
 
@@ -63,19 +64,19 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
       Navigator.of(context).pop(false);
     }
 
-    var buttonAction = widget.config.onMandatoryUpdateClickAndroid;
+    var buttonAction = config.onMandatoryUpdateClickAndroid;
     var buttonText = translations.mandatoryUpdateButtonAndroid;
     var updateInfoText = _showAppStoreButton
         ? translations.mandatoryUpdateBodyAndroid
         : translations.optionalUpdateQuestionAndroid;
     if (kIsWeb) {
-      buttonAction = widget.config.onMandatoryUpdateClickWeb;
+      buttonAction = config.onMandatoryUpdateClickWeb;
       buttonText = translations.mandatoryUpdateButtonWeb;
       updateInfoText = _showAppStoreButton
           ? translations.mandatoryUpdateBodyWeb
           : translations.optionalUpdateQuestionWeb;
     } else if (Platform.isIOS || Platform.isMacOS) {
-      buttonAction = widget.config.onMandatoryUpdateClickIos;
+      buttonAction = config.onMandatoryUpdateClickIos;
       buttonText = translations.mandatoryUpdateButtonIos;
       updateInfoText = _showAppStoreButton
           ? translations.mandatoryUpdateBodyIos
@@ -99,26 +100,23 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: _showAppStoreButton
               ? [
-                  FilledButton(
-                    onPressed: buttonAction,
-                    child: Text(
-                      buttonText,
-                    ),
+                  config.builders.updateButtonBuilder(
+                    context,
+                    buttonAction,
+                    Text(buttonText),
                   ),
                 ]
               : [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: onClickNo,
-                      child: Text(translations.optionalUpdateBackendLeadingNo),
-                    ),
+                  config.builders.declineButtonBuilder(
+                    context,
+                    onClickNo,
+                    Text(translations.optionalUpdateBackendLeadingNo),
                   ),
                   const SizedBox(width: 22),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: onClickYes,
-                      child: Text(translations.optionalUpdateBackendLeadingYes),
-                    ),
+                  config.builders.acceptButtonBuilder(
+                    context,
+                    onClickYes,
+                    Text(translations.optionalUpdateBackendLeadingYes),
                   ),
                 ],
         ),

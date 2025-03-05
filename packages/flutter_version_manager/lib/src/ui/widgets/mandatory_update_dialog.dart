@@ -59,9 +59,10 @@ class DefaultMandatoryUpdateDialogBackendLeading {
       ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [
-        FilledButton(
-          onPressed: buttonAction,
-          child: Text(buttonText),
+        config.builders.updateButtonBuilder(
+          context,
+          buttonAction,
+          Text(buttonText),
         ),
       ],
     );
