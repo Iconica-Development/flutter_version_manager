@@ -5,6 +5,7 @@ import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_version_manager/src/config/version_manager_config.dart";
 import "package:flutter_version_manager/src/utils/scope.dart";
+import "package:version_repository_interface/version_repository_interface.dart";
 
 /// Default optional update dialog for when the backend is leading and the
 /// frontend could be updated but it is not required for the app to work.
@@ -13,7 +14,11 @@ class DefaultOptionalUpdateDialogBackendLeading {
   const DefaultOptionalUpdateDialogBackendLeading._();
 
   /// Pushes the optional update dialog to the screen and it can be dismissed
-  static Future<bool> showOptionalUpdateDialog(BuildContext context) async {
+  static Future<bool> showOptionalUpdateDialog(
+    BuildContext context,
+    VersionCompatibiliy compatibility,
+    Version? currentAppVersion,
+  ) async {
     var scope = VersionManagerScope.of(context);
     var config = scope.config;
 
@@ -21,26 +26,43 @@ class DefaultOptionalUpdateDialogBackendLeading {
           context: context,
           builder: (ctx) => config
               .builders.optionalUpdateDialogBuilderFrontendleading
-              .call(context),
+              .call(context, compatibility, currentAppVersion),
         ) ??
         false;
   }
 
   /// Builder for the optional update dialog frontend leading
   /// This dialog will show an option to update the app and it can be dismissed.
-  static Widget builder(BuildContext context) {
+  static Widget builder(
+    BuildContext context,
+    VersionCompatibiliy compatibility,
+    Version? currentAppVersion,
+  ) {
     var scope = VersionManagerScope.of(context);
 
     return _OptionalUpdateDialog(
       config: scope.config,
+      service: scope.service,
+      currentAppVersion: currentAppVersion,
+      compatibility: compatibility,
     );
   }
 }
 
 /// The optional update dialog that updates state when clicking "Yes"
 class _OptionalUpdateDialog extends StatefulWidget {
-  const _OptionalUpdateDialog({required this.config});
+  const _OptionalUpdateDialog({
+    required this.config,
+    required this.service,
+    required this.currentAppVersion,
+    required this.compatibility,
+  });
+
   final VersionManagerConfig config;
+  final VersionRepositoryService service;
+  final Version? currentAppVersion;
+  final VersionCompatibiliy compatibility;
+
   @override
   State<_OptionalUpdateDialog> createState() => _OptionalUpdateDialogState();
 }
@@ -51,18 +73,27 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
   @override
   Widget build(BuildContext context) {
     var config = widget.config;
+    var service = widget.service;
     var translations = config.translations;
     var theme = Theme.of(context);
     var textTheme = theme.textTheme;
 
-    void onClickYes() {
+    Future<void> onClickYes() async {
       setState(() {
         _showAppStoreButton = true;
       });
+      await service.interactWithOptionalUpdate(
+        widget.currentAppVersion,
+        widget.compatibility,
+      );
     }
 
-    void onClickNo() {
+    Future<void> onClickNo() async {
       Navigator.of(context).pop(false);
+      await service.interactWithOptionalUpdate(
+        widget.currentAppVersion,
+        widget.compatibility,
+      );
     }
 
     var buttonText = translations.mandatoryUpdateButtonAndroid;

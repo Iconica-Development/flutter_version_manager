@@ -1,4 +1,5 @@
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:version_repository_interface/version_repository_interface.dart";
 
 /// Firebase implementation of [VersionRepository].
@@ -29,6 +30,10 @@ class FirebaseVersionRepository implements VersionRepositoryInterface {
   /// Use this getter and not the `versionDoc` field directly.
   DocumentReference get versionDocment =>
       versionDoc ?? firestore.collection("version").doc("version");
+
+  /// The shared preferences key for the string of the last version for which
+  /// the optional update was interacted with.
+  static const String sharedPrefsKey = "interacted_with_version";
 
   @override
   Future<String> getCurrentBackendVersion() async {
@@ -61,5 +66,27 @@ class FirebaseVersionRepository implements VersionRepositoryInterface {
     throw UnsupportedError(
       "This method is not supported by the Firebase version repository.",
     );
+  }
+
+  @override
+  Future<bool> checkIfOptionalUpdateIsInteractedWith(
+    Version? version,
+    VersionCompatibiliy type,
+  ) async {
+    var prefs = await SharedPreferences.getInstance();
+    var storedVersion = prefs.getString(sharedPrefsKey);
+    if (storedVersion == version?.toString()) {
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<void> interactWithOptionalUpdate(
+    Version? version,
+    VersionCompatibiliy type,
+  ) async {
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString(sharedPrefsKey, version.toString());
   }
 }

@@ -125,12 +125,13 @@ class _VersionManagerInitializerState
               compatibility,
               backendLeading,
             ),
-        onOptionalUpdate: (compatibility, backendLeading) =>
+        onOptionalUpdate: (compatibility, backendLeading, currentAppVersion) =>
             widget.onOptionalUpdate?.call(compatibility, backendLeading) ??
             _defaultOptionalUpdate(
               context,
               compatibility: compatibility,
               backendLeading: backendLeading,
+              currentAppVersion: currentAppVersion,
             ),
         onUpdateEnd: widget.onUpdateEnd ?? _defaultOnUpdateEnd,
       );
@@ -159,10 +160,13 @@ class _VersionManagerInitializerState
     BuildContext context, {
     required VersionCompatibiliy compatibility,
     required bool backendLeading,
+    required Version? currentAppVersion,
   }) async {
     if (backendLeading) {
       return DefaultOptionalUpdateDialogBackendLeading.showOptionalUpdateDialog(
         context,
+        compatibility,
+        currentAppVersion,
       );
     } else {
       return DefaultOptionalUpdateDialogFrontendLeading
