@@ -1,3 +1,4 @@
+import "dart:async";
 import "dart:io";
 
 import "package:flutter/foundation.dart";
@@ -64,23 +65,27 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
       Navigator.of(context).pop(false);
     }
 
-    var buttonAction = config.onMandatoryUpdateClickAndroid;
     var buttonText = translations.mandatoryUpdateButtonAndroid;
     var updateInfoText = _showAppStoreButton
         ? translations.mandatoryUpdateBodyAndroid
         : translations.optionalUpdateQuestionAndroid;
+    var platform = "android";
     if (kIsWeb) {
-      buttonAction = config.onMandatoryUpdateClickWeb;
+      platform = "web";
       buttonText = translations.mandatoryUpdateButtonWeb;
       updateInfoText = _showAppStoreButton
           ? translations.mandatoryUpdateBodyWeb
           : translations.optionalUpdateQuestionWeb;
     } else if (Platform.isIOS || Platform.isMacOS) {
-      buttonAction = config.onMandatoryUpdateClickIos;
+      platform = "ios";
       buttonText = translations.mandatoryUpdateButtonIos;
       updateInfoText = _showAppStoreButton
           ? translations.mandatoryUpdateBodyIos
           : translations.optionalUpdateQuestionIos;
+    }
+
+    FutureOr<void>? onButtonClick() async {
+      await config.onUpdatePress?.call(mandatory: false, platform: platform);
     }
 
     return AlertDialog(
@@ -102,7 +107,7 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
               ? [
                   config.builders.updateButtonBuilder(
                     context,
-                    buttonAction,
+                    onButtonClick,
                     Text(buttonText),
                   ),
                 ]

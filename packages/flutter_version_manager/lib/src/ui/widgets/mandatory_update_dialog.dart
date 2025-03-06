@@ -35,15 +35,19 @@ class DefaultMandatoryUpdateDialogBackendLeading {
 
     var bodyText = translations.mandatoryUpdateBodyAndroid;
     var buttonText = translations.mandatoryUpdateButtonAndroid;
-    var buttonAction = config.onMandatoryUpdateClickAndroid;
+    var platform = "android";
     if (kIsWeb) {
       bodyText = translations.mandatoryUpdateBodyWeb;
       buttonText = translations.mandatoryUpdateButtonWeb;
-      buttonAction = config.onMandatoryUpdateClickWeb;
+      platform = "web";
     } else if (Platform.isIOS || Platform.isMacOS) {
       bodyText = translations.mandatoryUpdateBodyIos;
       buttonText = translations.mandatoryUpdateButtonIos;
-      buttonAction = config.onMandatoryUpdateClickIos;
+      platform = "ios";
+    }
+
+    FutureOr<void>? onButtonClick() async {
+      await config.onUpdatePress?.call(mandatory: true, platform: platform);
     }
 
     return AlertDialog(
@@ -61,7 +65,7 @@ class DefaultMandatoryUpdateDialogBackendLeading {
       actions: [
         config.builders.updateButtonBuilder(
           context,
-          buttonAction,
+          onButtonClick,
           Text(buttonText),
         ),
       ],
