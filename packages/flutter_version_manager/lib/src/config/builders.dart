@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_version_manager/src/ui/widgets/buttons.dart";
 import "package:flutter_version_manager/src/ui/widgets/mandatory_update_dialog.dart";
 import "package:flutter_version_manager/src/ui/widgets/optional_update_dialog.dart";
+import "package:version_repository_interface/version_repository_interface.dart";
 
 /// A class that holds the custom builder widgets
 class VersionManagerBuilders {
@@ -39,7 +40,8 @@ class VersionManagerBuilders {
   /// accepts or declines the update.
   /// If the user accepts, the update function will be called.
   /// If the user declines, the dialog will be dismissed.
-  final WidgetBuilder optionalUpdateDialogBuilderFrontendleading;
+  final Widget Function(BuildContext, VersionCompatibiliy, Version?)
+      optionalUpdateDialogBuilderFrontendleading;
 
   /// The builder for the update end snackbar.
   final SnackBar Function(BuildContext context)? updateEndSnackbarBuilder;

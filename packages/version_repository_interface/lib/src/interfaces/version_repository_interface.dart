@@ -25,4 +25,18 @@ abstract class VersionRepositoryInterface {
   /// Get the current app version.
   /// Returns the current app version.
   Future<String?> getCurrentAppVersion();
+
+  /// Called when yes or no is pressed on the optional update dialog to indicate
+  /// that the user has interacted with the dialog.
+  Future<void> interactWithOptionalUpdate(
+    Version? version,
+    VersionCompatibiliy type,
+  );
+
+  /// Check if the optional update dialog has been interacted with. If true the
+  /// dialog will not be shown again.
+  Future<bool> checkIfOptionalUpdateIsInteractedWith(
+    Version? version,
+    VersionCompatibiliy type,
+  );
 }

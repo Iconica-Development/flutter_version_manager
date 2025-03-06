@@ -18,13 +18,19 @@ Future<void> checkForUpdates({
   required VersionRepositoryService service,
   Future<bool> Function(VersionCompatibiliy compatibility, bool backendLeading)?
       onMandatoryUpdate,
-  Future<bool> Function(VersionCompatibiliy compatibility, bool backendLeading)?
-      onOptionalUpdate,
+  Future<bool> Function(
+    VersionCompatibiliy compatibility,
+    bool backendLeading,
+    Version? currentAppVersion,
+  )? onOptionalUpdate,
   VoidCallback? onUpdateEnd,
   bool backendLeading = true,
 }) async {
   var expectedBackendVersion = await service.getExpectedBackendVersion();
   var currentBackendVersion = await service.getCurrentBackendVersion();
+
+  Version? requiredAppVersion;
+  Version? currentAppVersion;
 
   if (expectedBackendVersion == null) {
     debugPrint(
@@ -54,8 +60,8 @@ Future<void> checkForUpdates({
   if (leading == "backend") {
     debugPrint("CHECKING APP AVAILABILITY");
 
-    var requiredAppVersion = await service.getRequiredAppVersion();
-    var currentAppVersion = await service.getCurrentAppVersion();
+    requiredAppVersion = await service.getRequiredAppVersion();
+    currentAppVersion = await service.getCurrentAppVersion();
 
     if (currentAppVersion != null) {
       debugPrint(
@@ -82,9 +88,16 @@ Future<void> checkForUpdates({
 
     await updateMethod?.call(updateType, expectedBackendVersion);
   } else {
+    var checkIfOptionalUpdateIsShown = await service
+        .checkIfOptionalUpdateIsInteractedWith(currentAppVersion, updateType);
+    if (checkIfOptionalUpdateIsShown) {
+      return;
+    }
+
     var shouldUpdate = await onOptionalUpdate?.call(
           updateType,
           leading == "backend",
+          currentAppVersion,
         ) ??
         true;
 

@@ -102,4 +102,26 @@ class VersionRepositoryService {
       update: null,
     );
   }
+
+  /// Called when yes or no is pressed on the optional update dialog to indicate
+  /// that the user has interacted with the dialog.
+  Future<void> interactWithOptionalUpdate(
+    Version? version,
+    VersionCompatibiliy type,
+  ) async =>
+      versionRepositoryInterface.interactWithOptionalUpdate(
+        version,
+        type,
+      );
+
+  /// Check if the optional update dialog has been interacted with. If true the
+  /// dialog will not be shown again.
+  Future<bool> checkIfOptionalUpdateIsInteractedWith(
+    Version? version,
+    VersionCompatibiliy type,
+  ) async =>
+      versionRepositoryInterface.checkIfOptionalUpdateIsInteractedWith(
+        version,
+        type,
+      );
 }
