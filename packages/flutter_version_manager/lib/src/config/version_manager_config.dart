@@ -1,4 +1,5 @@
-import "package:flutter/material.dart";
+import "dart:async";
+
 import "package:flutter_version_manager/src/config/builders.dart";
 import "package:flutter_version_manager/src/config/translations.dart";
 
@@ -9,12 +10,7 @@ class VersionManagerConfig {
   const VersionManagerConfig({
     this.translations = const VersionManagerTranslations.empty(),
     this.builders = const VersionManagerBuilders(),
-    this.onMandatoryUpdateClickAndroid,
-    this.onMandatoryUpdateClickIos,
-    this.onMandatoryUpdateClickWeb,
-    this.onOptionalUpdateClickAndroid,
-    this.onOptionalUpdateClickIos,
-    this.onOptionalUpdateClickWeb,
+    this.onUpdatePress,
   });
 
   /// The translations for the version manager.
@@ -23,27 +19,14 @@ class VersionManagerConfig {
   /// The builders for the version manager.
   final VersionManagerBuilders builders;
 
-  /// The function to call when the user clicks the mandatory update for android
-  /// This function should open the play store page for the app.
-  final VoidCallback? onMandatoryUpdateClickAndroid;
-
-  /// The function to call when the user clicks the mandatory update for ios
-  /// This function should open the app store page for the app.
-  final VoidCallback? onMandatoryUpdateClickIos;
-
-  /// The function to call when the user clicks the mandatory update for web
-  /// This function should reload the page.
-  final VoidCallback? onMandatoryUpdateClickWeb;
-
-  /// The function to call when the user clicks the optional update for android
-  /// This function should open the play store page for the app.
-  final VoidCallback? onOptionalUpdateClickAndroid;
-
-  /// The function to call when the user clicks the optional update for ios
-  /// This function should open the app store page for the app.
-  final VoidCallback? onOptionalUpdateClickIos;
-
-  /// The function to call when the user clicks the optional update for web
-  /// This function should reload the page.
-  final VoidCallback? onOptionalUpdateClickWeb;
+  /// The function to call when the user clicks the update button.
+  /// The update can be mandatory or optional.
+  /// This function should open the store page or reload the page.
+  final UpdatePressCallback? onUpdatePress;
 }
+
+/// Typedef for the update press callback
+typedef UpdatePressCallback = FutureOr<void>? Function({
+  required bool mandatory,
+  required String platform,
+});
