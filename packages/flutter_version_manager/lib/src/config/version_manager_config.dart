@@ -10,6 +10,7 @@ class VersionManagerConfig {
   const VersionManagerConfig({
     this.translations = const VersionManagerTranslations.empty(),
     this.builders = const VersionManagerBuilders(),
+    this.compareAppVersionOnly = false,
     this.onUpdatePress,
   });
 
@@ -23,6 +24,11 @@ class VersionManagerConfig {
   /// The update can be mandatory or optional.
   /// This function should open the store page or reload the page.
   final UpdatePressCallback? onUpdatePress;
+
+  /// Whether to only compare the app version and ignore the current and
+  /// expected backend versions.
+  /// Defaults to `false`.
+  final bool compareAppVersionOnly;
 }
 
 /// Typedef for the update press callback

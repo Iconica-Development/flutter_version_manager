@@ -67,6 +67,7 @@ class FlutterVersionManager extends StatelessWidget {
 
   /// The configuration for the version manager.
   final VersionManagerConfig? config;
+
   @override
   Widget build(BuildContext context) => VersionManagerScope(
         config: config ?? const VersionManagerConfig(),
@@ -114,10 +115,12 @@ class _VersionManagerInitializerState
       if (!mounted) return;
       var scope = VersionManagerScope.of(context);
       var service = scope.service;
+      var config = scope.config;
 
       await checkForUpdates(
         service: service,
         backendLeading: widget.backendLeading,
+        compareAppVersionOnly: config.compareAppVersionOnly,
         onMandatoryUpdate: (compatibility, backendLeading) =>
             widget.onMandatoryUpdate?.call(compatibility, backendLeading) ??
             _defaultMandatoryUpdate(
@@ -125,13 +128,13 @@ class _VersionManagerInitializerState
               compatibility,
               backendLeading,
             ),
-        onOptionalUpdate: (compatibility, backendLeading, currentAppVersion) =>
+        onOptionalUpdate: (compatibility, backendLeading, expectedAppVersion) =>
             widget.onOptionalUpdate?.call(compatibility, backendLeading) ??
             _defaultOptionalUpdate(
               context,
               compatibility: compatibility,
               backendLeading: backendLeading,
-              currentAppVersion: currentAppVersion,
+              expectedAppVersion: expectedAppVersion,
             ),
         onUpdateEnd: widget.onUpdateEnd ?? _defaultOnUpdateEnd,
       );
@@ -160,13 +163,13 @@ class _VersionManagerInitializerState
     BuildContext context, {
     required VersionCompatibiliy compatibility,
     required bool backendLeading,
-    required Version? currentAppVersion,
+    required Version? expectedAppVersion,
   }) async {
     if (backendLeading) {
       return DefaultOptionalUpdateDialogBackendLeading.showOptionalUpdateDialog(
         context,
         compatibility,
-        currentAppVersion,
+        expectedAppVersion,
       );
     } else {
       return DefaultOptionalUpdateDialogFrontendLeading

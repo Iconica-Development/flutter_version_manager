@@ -13,6 +13,8 @@ import "package:version_repository_interface/version_repository_interface.dart";
 /// [backendLeading] If the backend is leading. Defaults to `true`.
 /// If `true`, the backend is leading.
 /// If `false`, the frontend is leading.
+/// [compareAppVersionOnly] If `true`, ignore backend checks and compare the
+/// required and current app versions only.
 /// Returns a [Future] that completes when the update is complete.
 Future<void> checkForUpdates({
   required VersionRepositoryService service,
@@ -21,91 +23,107 @@ Future<void> checkForUpdates({
   Future<bool> Function(
     VersionCompatibiliy compatibility,
     bool backendLeading,
-    Version? currentAppVersion,
+    Version? expectedAppVersion,
   )? onOptionalUpdate,
   VoidCallback? onUpdateEnd,
   bool backendLeading = true,
+  bool compareAppVersionOnly = false,
 }) async {
-  var expectedBackendVersion = await service.getExpectedBackendVersion();
-  var currentBackendVersion = await service.getCurrentBackendVersion();
+  if (compareAppVersionOnly) {
+    var requiredAppVersion = await service.getRequiredAppVersion();
+    var currentAppVersion = await service.getCurrentAppVersion();
+    if (currentAppVersion == null) return;
+
+    var updateType = requiredAppVersion.compare(currentAppVersion);
+    if (updateType == VersionCompatibiliy.equivalent) return;
+
+    if (updateType.isMandatory) {
+      var shouldUpdate =
+          await onMandatoryUpdate?.call(updateType, backendLeading) ?? true;
+      if (!shouldUpdate) return;
+    } else {
+      var dismissed = await service.checkIfOptionalUpdateIsInteractedWith(
+        requiredAppVersion,
+        updateType,
+      );
+      if (dismissed) return;
+
+      var shouldUpdate = await onOptionalUpdate?.call(
+            updateType,
+            backendLeading,
+            requiredAppVersion,
+          ) ??
+          true;
+      if (!shouldUpdate) return;
+    }
+
+    onUpdateEnd?.call();
+    return;
+  }
+
+  var expectedBackend = await service.getExpectedBackendVersion();
+  var currentBackend = await service.getCurrentBackendVersion();
+
+  if (expectedBackend == null) return;
+
+  var updateCheck = await service.checkForUpdates(
+    expected: expectedBackend,
+    current: currentBackend,
+    backendLeading: backendLeading,
+  );
+
+  if (updateCheck.compatibility == VersionCompatibiliy.equivalent) {
+    return; // No version difference
+  }
 
   Version? requiredAppVersion;
   Version? currentAppVersion;
 
-  if (expectedBackendVersion == null) {
-    debugPrint(
-      "Could not get backend versions - \nExpected: $expectedBackendVersion "
-      "\nCurrent: $currentBackendVersion",
-    );
-  }
-
-  debugPrint(
-    "EXPECTED: $expectedBackendVersion\nCURRENT: $currentBackendVersion",
-  );
-
-  var updateCheck = await service.checkForUpdates(
-    expected: expectedBackendVersion!,
-    current: currentBackendVersion,
-    backendLeading: backendLeading,
-  );
-
-  var leading = updateCheck.leading;
-  var updateMethod = updateCheck.update;
-  var updateType = updateCheck.compatibility;
-
-  if (updateType == VersionCompatibiliy.equivalent) {
-    return;
-  }
-
-  if (leading == "backend") {
-    debugPrint("CHECKING APP AVAILABILITY");
-
+  if (updateCheck.leading == "backend") {
     requiredAppVersion = await service.getRequiredAppVersion();
     currentAppVersion = await service.getCurrentAppVersion();
 
     if (currentAppVersion != null) {
-      debugPrint(
-        "REQUIRED APP: $requiredAppVersion\nCURRENT APP: $currentAppVersion",
-      );
-      var result = requiredAppVersion.compare(currentAppVersion);
+      var appDiff = requiredAppVersion.compare(currentAppVersion);
 
-      if (!result.isUpgrade) {
+      if (!appDiff.isUpgrade) {
         return;
       }
     }
   }
 
-  if (updateType.isMandatory) {
+  if (updateCheck.compatibility.isMandatory) {
     var shouldUpdate = await onMandatoryUpdate?.call(
-          updateType,
-          leading == "backend",
+          updateCheck.compatibility,
+          updateCheck.leading == "backend",
         ) ??
         true;
+    if (!shouldUpdate) return;
 
-    if (!shouldUpdate) {
-      return;
-    }
-
-    await updateMethod?.call(updateType, expectedBackendVersion);
+    await updateCheck.update?.call(
+      updateCheck.compatibility,
+      expectedBackend,
+    );
   } else {
-    var checkIfOptionalUpdateIsShown = await service
-        .checkIfOptionalUpdateIsInteractedWith(currentAppVersion, updateType);
-    if (checkIfOptionalUpdateIsShown) {
-      return;
-    }
+    currentAppVersion ??= await service.getCurrentAppVersion();
+    var dismissed = await service.checkIfOptionalUpdateIsInteractedWith(
+      requiredAppVersion,
+      updateCheck.compatibility,
+    );
+    if (dismissed) return;
 
     var shouldUpdate = await onOptionalUpdate?.call(
-          updateType,
-          leading == "backend",
-          currentAppVersion,
+          updateCheck.compatibility,
+          updateCheck.leading == "backend",
+          requiredAppVersion,
         ) ??
         true;
+    if (!shouldUpdate) return;
 
-    if (!shouldUpdate) {
-      return;
-    }
-
-    await updateMethod?.call(updateType, expectedBackendVersion);
+    await updateCheck.update?.call(
+      updateCheck.compatibility,
+      expectedBackend,
+    );
   }
 
   onUpdateEnd?.call();
