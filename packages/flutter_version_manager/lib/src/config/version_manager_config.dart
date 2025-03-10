@@ -11,6 +11,7 @@ class VersionManagerConfig {
     this.translations = const VersionManagerTranslations.empty(),
     this.builders = const VersionManagerBuilders(),
     this.compareAppVersionOnly = false,
+    this.backendLeading = true,
     this.onUpdatePress,
   });
 
@@ -29,6 +30,11 @@ class VersionManagerConfig {
   /// expected backend versions.
   /// Defaults to `false`.
   final bool compareAppVersionOnly;
+
+  /// If the backend is leading. Defaults to `true`.
+  /// If `true`, the backend is leading.
+  /// If `false`, the frontend is leading.
+  final bool backendLeading;
 }
 
 /// Typedef for the update press callback

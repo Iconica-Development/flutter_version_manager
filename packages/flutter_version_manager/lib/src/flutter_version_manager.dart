@@ -17,7 +17,6 @@ class FlutterVersionManager extends StatelessWidget {
     required this.child,
     this.service,
     this.config,
-    this.backendLeading = true,
     this.onMandatoryUpdate,
     this.onOptionalUpdate,
     this.onUpdateEnd,
@@ -33,11 +32,6 @@ class FlutterVersionManager extends StatelessWidget {
 
   /// The child widget.
   final Widget child;
-
-  /// If the backend is leading. Defaults to `true`.
-  /// If `true`, the backend is leading.
-  /// If `false`, the frontend is leading.
-  final bool backendLeading;
 
   /// The function to call when a mandatory update is required.
   /// When this function is not null, the default mandatory
@@ -73,7 +67,6 @@ class FlutterVersionManager extends StatelessWidget {
         config: config ?? const VersionManagerConfig(),
         service: service ?? VersionRepositoryService(),
         child: _VersionManagerInitializer(
-          backendLeading: backendLeading,
           onMandatoryUpdate: onMandatoryUpdate,
           onOptionalUpdate: onOptionalUpdate,
           onUpdateEnd: onUpdateEnd,
@@ -85,14 +78,12 @@ class FlutterVersionManager extends StatelessWidget {
 class _VersionManagerInitializer extends StatefulWidget {
   const _VersionManagerInitializer({
     required this.child,
-    required this.backendLeading,
     required this.onMandatoryUpdate,
     required this.onOptionalUpdate,
     required this.onUpdateEnd,
   });
 
   final Widget child;
-  final bool backendLeading;
   final Future<bool> Function(VersionCompatibiliy, bool)? onMandatoryUpdate;
   final Future<bool> Function(VersionCompatibiliy, bool)? onOptionalUpdate;
   final VoidCallback? onUpdateEnd;
@@ -119,7 +110,7 @@ class _VersionManagerInitializerState
 
       await checkForUpdates(
         service: service,
-        backendLeading: widget.backendLeading,
+        backendLeading: config.backendLeading,
         compareAppVersionOnly: config.compareAppVersionOnly,
         onMandatoryUpdate: (compatibility, backendLeading) =>
             widget.onMandatoryUpdate?.call(compatibility, backendLeading) ??
