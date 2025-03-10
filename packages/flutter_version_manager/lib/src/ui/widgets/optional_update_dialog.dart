@@ -17,7 +17,7 @@ class DefaultOptionalUpdateDialogBackendLeading {
   static Future<bool> showOptionalUpdateDialog(
     BuildContext context,
     VersionCompatibiliy compatibility,
-    Version? currentAppVersion,
+    Version? expectedAppVersion,
   ) async {
     var scope = VersionManagerScope.of(context);
     var config = scope.config;
@@ -26,7 +26,7 @@ class DefaultOptionalUpdateDialogBackendLeading {
           context: context,
           builder: (ctx) => config
               .builders.optionalUpdateDialogBuilderFrontendleading
-              .call(context, compatibility, currentAppVersion),
+              .call(context, compatibility, expectedAppVersion),
         ) ??
         false;
   }
@@ -36,14 +36,14 @@ class DefaultOptionalUpdateDialogBackendLeading {
   static Widget builder(
     BuildContext context,
     VersionCompatibiliy compatibility,
-    Version? currentAppVersion,
+    Version? expectedAppVersion,
   ) {
     var scope = VersionManagerScope.of(context);
 
     return _OptionalUpdateDialog(
       config: scope.config,
       service: scope.service,
-      currentAppVersion: currentAppVersion,
+      expectedAppVersion: expectedAppVersion,
       compatibility: compatibility,
     );
   }
@@ -54,13 +54,13 @@ class _OptionalUpdateDialog extends StatefulWidget {
   const _OptionalUpdateDialog({
     required this.config,
     required this.service,
-    required this.currentAppVersion,
+    required this.expectedAppVersion,
     required this.compatibility,
   });
 
   final VersionManagerConfig config;
   final VersionRepositoryService service;
-  final Version? currentAppVersion;
+  final Version? expectedAppVersion;
   final VersionCompatibiliy compatibility;
 
   @override
@@ -83,7 +83,7 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
         _showAppStoreButton = true;
       });
       await service.interactWithOptionalUpdate(
-        widget.currentAppVersion,
+        widget.expectedAppVersion,
         widget.compatibility,
       );
     }
@@ -91,7 +91,7 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
     Future<void> onClickNo() async {
       Navigator.of(context).pop(false);
       await service.interactWithOptionalUpdate(
-        widget.currentAppVersion,
+        widget.expectedAppVersion,
         widget.compatibility,
       );
     }
