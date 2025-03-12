@@ -25,7 +25,7 @@ class DefaultOptionalUpdateDialogBackendLeading {
     return await showDialog(
           context: context,
           builder: (ctx) => config
-              .builders.optionalUpdateDialogBuilderFrontendleading
+              .builders.optionalUpdateDialogBuilderBackendleading
               .call(context, compatibility, expectedAppVersion),
         ) ??
         false;
@@ -121,7 +121,7 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
 
     return AlertDialog(
       title: Text(
-        translations.optionalUpdateFrontendLeadingTitle,
+        translations.optionalUpdateBackendLeadingTitle,
         style: textTheme.titleMedium,
         textAlign: TextAlign.center,
       ),
@@ -175,7 +175,7 @@ class DefaultOptionalUpdateDialogFrontendLeading {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        config.builders.optionalUpdateSnackBarBuilderBackendleading
+        config.builders.optionalUpdateSnackBarBuilderFrontendleading
             .call(context),
       );
     });
@@ -190,7 +190,7 @@ class DefaultOptionalUpdateDialogFrontendLeading {
 
     return SnackBar(
       content: Text(
-        translations.optionalUpdateBackendLeadingTitle,
+        translations.optionalUpdateFrontendLeadingTitle,
       ),
     );
   }
