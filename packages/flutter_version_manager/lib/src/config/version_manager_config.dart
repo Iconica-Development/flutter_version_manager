@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:flutter/material.dart";
 import "package:flutter_version_manager/src/config/builders.dart";
 import "package:flutter_version_manager/src/config/translations.dart";
 
@@ -10,6 +11,7 @@ class VersionManagerConfig {
   const VersionManagerConfig({
     this.translations = const VersionManagerTranslations.empty(),
     this.builders = const VersionManagerBuilders(),
+    this.dialogStyling = const VersionManagerDialogStyling(),
     this.compareAppVersionOnly = false,
     this.backendLeading = true,
     this.onUpdatePress,
@@ -20,6 +22,9 @@ class VersionManagerConfig {
 
   /// The builders for the version manager.
   final VersionManagerBuilders builders;
+
+  /// The styling configuration for the update dialogs.
+  final VersionManagerDialogStyling dialogStyling;
 
   /// The function to call when the user clicks the update button.
   /// The update can be mandatory or optional.
@@ -42,3 +47,33 @@ typedef UpdatePressCallback = FutureOr<void>? Function({
   required bool mandatory,
   required String platform,
 });
+
+/// The styling for the version manager dialog.
+/// If not set the default values of an AlertDialog will be used.
+class VersionManagerDialogStyling {
+  /// Creates a [VersionManagerDialogStyling].
+  const VersionManagerDialogStyling({
+    this.titlePadding,
+    this.contentPadding,
+    this.actionsPadding,
+    this.shape,
+    this.spaceBetweenButtons = 22.0,
+  });
+
+  /// Padding around the title in the dialog.
+  final EdgeInsetsGeometry? titlePadding;
+
+  /// Padding around the content in the dialog.
+  final EdgeInsetsGeometry? contentPadding;
+
+  /// Padding around the buttons in the dialog.
+  final EdgeInsetsGeometry? actionsPadding;
+
+  /// The shape of the dialog.
+  /// This can be used to change the border radius of the dialog.
+  final ShapeBorder? shape;
+
+  /// The padding between the buttons in the dialog. For confirming an optional
+  /// update.
+  final double spaceBetweenButtons;
+}
