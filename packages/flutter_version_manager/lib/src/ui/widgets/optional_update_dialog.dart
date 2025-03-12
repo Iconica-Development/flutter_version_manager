@@ -75,6 +75,7 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
     var config = widget.config;
     var service = widget.service;
     var translations = config.translations;
+    var dialogStyling = config.dialogStyling;
     var theme = Theme.of(context);
     var textTheme = theme.textTheme;
 
@@ -120,6 +121,10 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
     }
 
     return AlertDialog(
+      titlePadding: dialogStyling.titlePadding,
+      contentPadding: dialogStyling.contentPadding,
+      actionsPadding: dialogStyling.actionsPadding,
+      shape: dialogStyling.shape,
       title: Text(
         translations.optionalUpdateFrontendLeadingTitle,
         style: textTheme.titleMedium,
@@ -148,7 +153,7 @@ class _OptionalUpdateDialogState extends State<_OptionalUpdateDialog> {
                     onClickNo,
                     Text(translations.optionalUpdateBackendLeadingNo),
                   ),
-                  const SizedBox(width: 22),
+                  SizedBox(width: dialogStyling.spaceBetweenButtons),
                   config.builders.acceptButtonBuilder(
                     context,
                     onClickYes,
