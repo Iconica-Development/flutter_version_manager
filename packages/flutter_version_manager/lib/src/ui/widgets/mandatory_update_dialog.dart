@@ -30,6 +30,7 @@ class DefaultMandatoryUpdateDialogBackendLeading {
     var scope = VersionManagerScope.of(context);
     var config = scope.config;
     var translations = config.translations;
+    var dialogStyling = config.dialogStyling;
     var theme = Theme.of(context);
     var textTheme = theme.textTheme;
 
@@ -51,6 +52,10 @@ class DefaultMandatoryUpdateDialogBackendLeading {
     }
 
     return AlertDialog(
+      titlePadding: dialogStyling.titlePadding,
+      contentPadding: dialogStyling.contentPadding,
+      actionsPadding: dialogStyling.actionsPadding,
+      shape: dialogStyling.shape,
       title: Text(
         translations.mandatoryUpdateTitle,
         style: textTheme.titleMedium,
