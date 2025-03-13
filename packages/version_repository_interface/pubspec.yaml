@@ -1,6 +1,6 @@
 name: version_repository_interface
 description: "Version manager repository interface"
-version: 0.1.0
+version: 1.0.0
 
 publish_to: https://forgejo.internal.iconica.nl/api/packages/internal/pub/
 

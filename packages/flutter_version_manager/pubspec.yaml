@@ -1,6 +1,6 @@
 name: flutter_version_manager
 description: "Flutter Version Manager"
-version: 0.1.0
+version: 1.0.0
 
 publish_to: https://forgejo.internal.iconica.nl/api/packages/internal/pub/
 
@@ -14,7 +14,7 @@ dependencies:
   url_launcher: ^6.2.1
   version_repository_interface:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^0.1.0
+    version: ^1.0.0
 
 dev_dependencies:
   flutter_test:

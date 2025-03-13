@@ -1,6 +1,6 @@
 name: firebase_version_repository
 description: "Firebase Version Repository"
-version: 0.1.0
+version: 1.0.0
 
 publish_to: https://forgejo.internal.iconica.nl/api/packages/internal/pub/
 
@@ -14,7 +14,7 @@ dependencies:
   cloud_firestore: any
   version_repository_interface:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^0.1.0
+    version: ^1.0.0
   shared_preferences: any
 
 dev_dependencies:
