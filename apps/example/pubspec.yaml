@@ -15,10 +15,10 @@ dependencies:
   cloud_firestore: any
   flutter_version_manager:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^0.1.0
+    version: ^1.0.0
   firebase_version_repository:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^0.1.0
+    version: ^1.0.0
 
 dev_dependencies:
   flutter_test:
